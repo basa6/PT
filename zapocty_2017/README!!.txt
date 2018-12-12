@@ -1,0 +1,1 @@
+Niektore ulohy su vypracovane ale pravdepodobne zle, ide o zadania iba!

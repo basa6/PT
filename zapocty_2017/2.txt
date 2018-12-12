@@ -1,0 +1,342 @@
+/*
+Meno: ???
+
+VSEOBECNE POKYNY:
+(1)	Subor premenujte na Priezvisko_Meno_ID_19hod_pisomka2.cpp (pouzite vase udaje).
+(2) Cela implementacia musi byt v tomto jednom subore (odovzdajte do miesta odovzdania v AIS len tento zdrojovy subor).
+(3) Program musi byt kompilovatelny. <---- DOLEZITE !!!
+(4) Nemente deklaracie funkcii (nemente navratove hodnoty ani typ a pocet parametrov v zadanych funkciach). <---- DOLEZITE !!!
+Nemente implementacie hotovych pomocnych funkcii, ani zadanych struktur ani implementovane casti tried.
+(5) V pripade potreby mozete kod doplnit o dalsie funkcie, struktury, alebo triedy.
+(6) Globalne premenne su zakazane. <---- DOLEZITE !!!
+(7) Funkcia 'main' musi byt v zdrojovom kode posledna.
+(8) Riadte sa aj pokynmi pri definiciach funkcii.
+*/
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <iomanip>
+#include <stdexcept>
+
+using namespace std;
+
+//-------------------------------------------------------------------------------------------------
+// Pomocne funkcie
+//-------------------------------------------------------------------------------------------------
+
+// implementacia funkcie 'std::to_string()' pre niektore verzie kompilatorov
+#if defined(__MINGW32__) || defined(_MSC_VER) || (_MSC_VER <= 1500)
+template < typename T > std::string to_string(const T n)
+{
+	std::ostringstream stm;
+	stm << n;
+	return stm.str();
+}
+#endif
+/*
+// implementacia funkcie 'std::stoi()' pre niektore verzie kompilatorov
+#if defined(__MINGW32__) || ! defined(__MINGW64__) || (_MSC_VER <= 1500)
+namespace std {
+	//rozdiel oproti standardnej implementacii je, ze standardna implementacia moze vyhodit aj vynimku std::out_of_range
+	int stoi(std::string & str) throw(std::invalid_argument) {
+		std::istringstream is(str);
+		int number;
+		is >> number;
+		if (!is) {
+			throw std::invalid_argument("can't convert \"" + str + "\" to a number");
+		}
+		return number;
+	}
+}
+#endif
+*/
+//-------------------------------------------------------------------------------------------------
+// Uloha 1 (3 body)
+//-------------------------------------------------------------------------------------------------
+
+//Trieda 'Sifrator' sluzi na sifrovate textovych retazcov. Kazda instancia triedy ma v sebe sifrovaci kluc, zadany v konstruktore.
+//Algoritmus sifrovania funguje tak, ze ku ASCII kodu kazdeho znaku v texte sa pripocita hodnota dana klucom (nemusite riesit "pretecenie za abecedu"). 
+//Cize napr. pre kluc s hodnotou 1 sa "ABCD" zasifruje na "BCDE"
+//           pre kluc s hodnotou 2 sa "ABCD" zasifruje na "CDEF"
+//           pre kluc s hodnotou 1 sa "XYZ" zasifruje na "YZ[" ( znak '[' je v ascii tabulke za znakom 'Z')
+//Doplnte implementaciu triedy 'Sifrator' tak, aby
+// - konstruktor nastavil sifrovaci kluc, ktory sa bude pouzivat pocas sifrovania
+// - metoda 'zasifruj' vrati zasifrovany vstupny 'text'. 
+// - atributy musia byt sukromne (nesmie byt mozne k nim pristupit mimo triedy)
+//Poznamky: 
+// - bodkociarku za deklaraciou funkcie alebo konstruktora mozete vymazat
+// - vo funkcii 'main' odkomentujte prislusny testovaci kod
+class Sifrator {
+private:
+	int key;
+
+public:
+	Sifrator(int key) { this->key = key; } // konstruktor
+	~Sifrator() {} // destruktor
+
+	string zasifruj(string text);
+};
+
+string Sifrator::zasifruj(string text)
+{
+	for (register int i = 0; i < (int)text.length(); i++)
+	{
+		text[i] = text[i] + this->key;
+	}
+
+	return text;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Uloha 2 (1 bod)
+//-------------------------------------------------------------------------------------------------
+
+//Implementujete funkciu 'nacitajKnihu'
+//Funkcia precita vstupny prud udajov 'prudData' a precitane udaje zapise do struktury 'kniha'.
+//Vstupnym prudom udajov moze byt napr. subor alebo 'istreamstring'.
+//Udaje vo vstupnom prude su oddelene znakom '|'. Maju format:
+//     nazov1|autor1|rokVydania1|nazov2|autor2|rokVydania2|nazov3|autor3|rokVydania3|nazov4|autor4|rokVydania4|nazov5|autor5|rokVydania5.....
+//Napriklad:
+//     Rok v divocine|Karol Kalinsky|2016|Cesta okolo sveta za 80 dni|Jules Verne|1873
+//Napoved: mozete pouzit funkciu 'std::getline' a 'std::stoi'
+//Poznamka: sucastou zadania je aj vstupny textovy subor na ktorom prebehne testovanie v maine (vstupny textovy subor neodovzdavajte)
+
+struct Kniha {
+	string nazov; //nazov knihy
+	string autor; //meno autora
+	int rokVydania; //rok v ktorom bola kniha vydana
+};
+
+void nacitajKnihu(istream& prudDat, Kniha* kniha)
+{
+	// TODO
+}
+
+//-------------------------------------------------------------------------------------------------
+// Ulohy 3A, 3B, 3C
+//-------------------------------------------------------------------------------------------------
+
+//Uzol v binarnom vyhladavacom strome
+struct Node {
+	int data;    //hodnota uzlu
+	Node* left;  //lavy nasledovnik  (obsahuje prvok s mensou hodnotou)
+	Node* right; //pravy nasledovnik (obsahuje prvok s vacsou hodnotou)
+	Node(int value) : data(value), left(NULL), right(NULL) {}
+};
+
+//Binarny vyhladavaci strom (nie je vyvazeny)
+//Je implementovany tak, ze mensie prvky su vlavo (->left), vacsie prvku su vpravo (->right)
+class BST {
+private:
+	//koren stromu
+	Node* root;
+
+	void print(Node* node) {
+		if (node != NULL) {
+			print(node->left);
+			cout << node->data << ", ";
+			print(node->right);
+		}
+	}
+	void add(Node * node, int value) {
+		if (value == node->data) {
+		}
+		else {
+			if (value < node->data) { //mensia hodnota sa pridava do left
+				if (node->left == NULL) {
+					node->left = new Node(value);
+				}
+				else {
+					add(node->left, value);
+				}
+			}
+			else { //vacsia hodnota sa pridava do right
+				if (node->right == NULL) {
+					node->right = new Node(value);
+				}
+				else {
+					add(node->right, value);
+				}
+			}
+		}
+	}
+
+public:
+	BST() : root(NULL) {}
+
+	//Pridanie uzla s hodnotou value
+	void add(int value) {
+		if (root == NULL) {
+			root = new Node(value);
+		}
+		else {
+			add(root, value);
+		}
+	}
+
+	//vytlaci obsah stromu, prvky budu usporiadane, ak je strom BST (styl in-order)
+	void print() {
+		if (root == NULL) {
+			cout << "Strom je prazdny";
+		}
+		else {
+			print(root);
+		}
+	}
+
+	// Naplnenie stromu z pola prvkov
+	void fill(int p[], int size) {
+		for (int i = 0; i<size; i++) {
+			if (root == NULL) {
+				root = new Node(p[i]);
+			}
+			else {
+				add(root, p[i]);
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------
+	// Uloha 3A (2 body)
+	//-------------------------------------------------------------------------------------------------
+	//Implementujte funkciu 'hlbkaPrvku(int hladanaHodnota)', ktora bude splnat nasledovne poziadavky:
+	//   - funkcia vracia hlbku uzla s hodnotou 'hladanaHodnota',
+	//   - ak sa prvok z hladanou hodnotou nenachadza v strome, funkcia vyhodi vynimku typu 'int'. Hodnota vynimky bude rovna vstupnemu parametru 'hladanaHodnota'
+	//   - vo funkcii main implementuje kod na zachytenie tychto vynimiek vynimkyyy
+	//Poznamka: s touto ulohou suvysi nasledujuca uloha
+	int hlbkaPrvku(int hladanaHodnota) {
+		//TODO
+		return(0); // po implemenacii tento riadok zakomentujte
+	}
+
+	//-------------------------------------------------------------------------------------------------
+	// Uloha 3B (1 bod)
+	//-------------------------------------------------------------------------------------------------
+	//Vo funkcii 'main' implementuje kod na zachytenie vynimky vyhodenej funkciou 'hlbkaPrvku'
+
+	//-------------------------------------------------------------------------------------------------
+	// Uloha 3C (3 body)
+	//-------------------------------------------------------------------------------------------------
+	//Implementujte funkciu 'countLeafNodes', ktora bude splnat nasledovne poziadavky:
+	//   - funkcia vrati pocet listov stromu (uzly ktore nemaju ani jedneho potomka)
+	int countLeafNodes() {
+		// TODO
+		return 0; // po implemenacii tento riadok zakomentujte
+	}
+
+};
+
+
+int main() {
+
+	cout << "-------------------------------------------------------------------------------" << endl;
+	cout << "     TESTY triedy Sifrator " << endl;
+	cout << "-------------------------------------------------------------------------------" << endl;
+	
+	Sifrator s1(1);
+	Sifrator s5(5);
+	Sifrator sm5(-5);
+
+	//Najprv vypise co ma byt zasifrovanym textom, potom  dvojbodku, potom zasiforany text
+	cout << "BCDE:      " << s1.zasifruj("ABCD")      << endl;
+	cout << "CDEFGHIJK: " << s1.zasifruj("BCDEFGHIJ") << endl;
+	cout << ":          " << s1.zasifruj("")          << endl;
+	cout << "FGHI:      " << s5.zasifruj("ABCD")      << endl;
+	cout << "UYHPF:     " << s5.zasifruj("PTCKA")     << endl;
+	cout << "]^_:       " << s5.zasifruj("XYZ")       << endl;
+	cout << "STU:       " << sm5.zasifruj("XYZ")      << endl;
+	
+
+	cout << "-------------------------------------------------------------------------------" << endl;
+	cout << "     TESTY funkcie nacitajKnihu " << endl;
+	cout << "-------------------------------------------------------------------------------" << endl;
+
+	ifstream suborKnihy("knihy.txt"); //tento subor je na stranke zo zadanim
+	if (suborKnihy) {
+		Kniha kniha1;
+		Kniha kniha2;
+		Kniha kniha3;
+		Kniha kniha4;
+
+		nacitajKnihu(suborKnihy, &kniha1);
+		nacitajKnihu(suborKnihy, &kniha2);
+		nacitajKnihu(suborKnihy, &kniha3);
+		nacitajKnihu(suborKnihy, &kniha4);
+
+		//Poznamka: 'setw' sluzi na formatovanie vystupu (nastavuje minimalny pocet zapisanych znakov)
+		cout << "kniha1: " << setw(30) << kniha1.nazov << setw(15) << kniha1.autor << " " << kniha1.rokVydania << endl; //Cesta okolo sveta za 80 dni    Jules Verne    1873
+		cout << "kniha2: " << setw(30) << kniha2.nazov << setw(15) << kniha2.autor << " " << kniha2.rokVydania << endl; //Tajomny hrad v Karpatoch       Jules Verne    1892
+		cout << "kniha3: " << setw(30) << kniha3.nazov << setw(15) << kniha3.autor << " " << kniha3.rokVydania << endl; //Rok v divocine                 Karol Kalinsky 2016
+		cout << "kniha4: " << setw(30) << kniha4.nazov << setw(15) << kniha4.autor << " " << kniha4.rokVydania << endl; //Spevy                          Samo Chalupka  1868
+
+		suborKnihy.close();
+	}
+	else {
+		cerr << "chyba pri otvarani suboru (nemozno otestovat funkciu)" << endl;
+	}
+
+	cout << "-------------------------------------------------------------------------------" << endl;
+	cout << "     TESTY triedy BST - hlbka stromu prvku s hodnotou == HladanaHodnota" << endl;
+	cout << "-------------------------------------------------------------------------------" << endl;
+
+	int PoleBST_skuska[] = { 50, 20, 70, 10, 49, 40, 60, 80, 21, 32, 43, 54, 98, 67, 56, 45, 31, 34, 76, 97, 23 }; // 21prvkov
+	int PoleBST_skuska1[] = { 40, 20, 7,  10, 30, 50, 60, 80, 2,  3, 43, 4, 98, 67, 56 }; // 15prvkov
+	int PoleBST_skuska2[] = { 50, 39, 49, 10, 8, 51, 60, 80, 2,  3, 4, 93 }; // 12prvkov
+
+	// NEZABUDNI   - vo funkcii main implementuje kod na zachytenie vynimky
+
+	int HLcislo;
+	BST TreeUL3v1; TreeUL3v1.fill(PoleBST_skuska, 2); HLcislo = 50;
+	cout << "Hlbka prvku {" << HLcislo << "} je na ";
+	cout << TreeUL3v1.hlbkaPrvku(HLcislo);
+	cout << " urovni, malo vypisat : 1." << endl;
+
+	BST TreeUL3v2; TreeUL3v2.fill(PoleBST_skuska, 5); HLcislo = 10;
+	cout << "Hlbka prvku {" << HLcislo << "} je na ";
+	cout << TreeUL3v2.hlbkaPrvku(HLcislo);
+	cout << " urovni, malo vypisat : 3." << endl;
+
+	BST TreeUL3v3; TreeUL3v3.fill(PoleBST_skuska1, 5); HLcislo = 10;
+	cout << "Hlbka prvku {" << HLcislo << "} je na ";
+	cout << TreeUL3v3.hlbkaPrvku(HLcislo);
+	cout << " urovni, malo vypisat : 4." << endl;
+
+	BST TreeUL3v5; TreeUL3v5.fill(PoleBST_skuska, 11); HLcislo = 43;
+	cout << "Hlbka prvku {" << HLcislo << "} je na ";
+	cout << TreeUL3v5.hlbkaPrvku(HLcislo);
+	cout << " urovni, malo vypisat : 5." << endl;
+
+	BST TreeUL3v4; TreeUL3v4.fill(PoleBST_skuska1, 6); HLcislo = 60;
+	cout << "Hlbka prvku {" << HLcislo << "} je na ";
+	cout << TreeUL3v4.hlbkaPrvku(HLcislo);
+	cout << " funkcia ma vygenerovat vynimku typu int s hodnotou 60" << endl;
+
+	BST TreeUL3v6; HLcislo = 50;
+	cout << "Hlbka prvku {" << HLcislo << "} je na ";
+	cout << TreeUL3v6.hlbkaPrvku(HLcislo);
+	cout << " funkcia ma vygenerovat vynimku typu int s hodnotou 50" << endl;
+
+	cout << "-------------------------------------------------------------------------------" << endl;
+	cout << "     TESTY triedy BST - Pocet listov v strome" << endl;
+	cout << "-------------------------------------------------------------------------------" << endl;
+
+	BST TreeUL5v0; TreeUL5v0.fill(PoleBST_skuska, 1);
+	cout << "Pocet listov v strome : ma vypisat : 1, vypisalo : " << TreeUL5v0.countLeafNodes() << endl;
+
+	BST TreeUL5v1; TreeUL5v1.fill(PoleBST_skuska, 3);
+	cout << "Pocet listov v strome : ma vypisat : 2, vypisalo : " << TreeUL5v1.countLeafNodes() << endl;
+
+	BST TreeUL5v2; TreeUL5v2.fill(PoleBST_skuska, 4);
+	cout << "Pocet listov v strome : ma vypisat : 2, vypisalo : " << TreeUL5v2.countLeafNodes() << endl;
+
+	BST TreeUL5v3; TreeUL5v3.fill(PoleBST_skuska, 5);
+	cout << "Pocet listov v strome : ma vypisat : 3, vypisalo : " << TreeUL5v3.countLeafNodes() << endl;
+
+	BST TreeUL5v4; TreeUL5v4.fill(PoleBST_skuska, 6);
+	cout << "Pocet listov v strome : ma vypisat : 3, vypisalo : " << TreeUL5v4.countLeafNodes() << endl;
+
+	system("pause");
+	return 0;
+}

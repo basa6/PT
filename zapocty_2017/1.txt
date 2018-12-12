@@ -1,0 +1,314 @@
+/*
+Meno: Peter Èižmár
+
+VSEOBECNE POKYNY:
+	(1)	Subor premenujte na Priezvisko_Meno_ID_19hod_pisomka1.cpp (pouzite vase udaje).                                               
+	(2) Cela implementacia musi byt v tomto jednom subore (odovzdajte do miesta odovzdania v AIS len tento zdrojovy subor).
+	(3) Nemente deklaracie funkcii (nemente navratove hodnoty ani typ a pocet parametrov v zadanych funkciach). <---- DOLEZITE !!!
+	(4) Programu musi byt kompilovatelny. <---- DOLEZITE !!!
+	(5) Nemente implementacie hotovych pomocnych funkcii, ani zadanych struktur.
+	(6) V pripade potreby mozete kod doplnit o dalsie funkcie alebo struktury.
+	(7) Globalne premenne su zakazane. <---- DOLEZITE !!!
+	(8) Funkcia 'main' musi byt v zdrojovom kode posledna.
+	(9) Riadte sa aj pokynmi pri definiciach funkcii.
+
+
+POSTUP:				
+			
+1	[4 b]	Doprogramujte funkciu duplikujParne(), ktora v zadanom zretazenom zozname zduplikuje vsetky prvky obsahujuce parne cislo. 
+			Duplikat bude nasledovat hned za originalom. Nemente relativne poradie prvkov v zozname.
+
+2A	[1 b]	Doprogramujte funkciu swap(), ktora vymeni obsahy 2 struktur (prekopiruju sa udaje v strukturach).
+2B	[2 b]	Doprogramujte funkciu partition(), ktora preusporiada prvky pola tak, ze v jeho prvej casti budu prvky mensie ako pivot
+			a v druhej casti budu prvky vacsie alebo rovne ako pivot (prvky pola sa porovnavaju podla poctu bodov). 
+			Zvolte si vlastnu techniku vyberu pivota.
+			Funkcia vrati pocet bodov pivota. 
+
+3	[3 b]	Doprogramujte funkciu sumaPodstromu(), ktora vrati sucet hodnot prvkov podstromu v heape. 
+				
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// ------------------------------------------
+// HOTOVE POMOCNE FUNKCIE A DEFINICIE DATOVYCH TYPOV
+// ------------------------------------------
+
+// struktura, ktora reprezentuje jeden prvok zretazeneho zoznamu
+typedef struct prvok{
+        int data; // ciselna hodnota prvku
+        struct prvok *next; // smernik na nasledovnika v zozname
+}PRVOK;
+
+
+// struktura, reprezentujuca vysledok skusky
+typedef struct vysledok_skusky {
+	int body; // cele cislo v rozsahu <0,100>
+	char znamka; // mozne hodnoty: A,B,C,D,E alebo F
+}VYSLEDOK_SKUSKY;
+
+//	Klasifikacna stupnica FEI STU:
+//	A:	<92,100)
+//	B:	<83,92)
+//	C:	<74,83)
+//	D:	<65,74)
+//	E:	<56,65)
+//	F:	<0,56)
+
+
+// Funkcia na vytlacenie pola s vysledkami skusky
+// VSTUP:	
+//			vysledky 	- pole s vysledkami skusky
+//			dlzka		- dlzka pola
+// VYSTUP:	ziadny
+void vytlacVysledky(VYSLEDOK_SKUSKY vysledky[], int dlzka) {
+	int i;
+	printf("\n");
+	for (i = 0; i<dlzka; i++) {
+		printf("{%i, %c} ", vysledky[i].body, vysledky[i].znamka);
+	}
+}
+
+
+// Funkcia, ktora vypise zretazeny zoznam
+// VSTUP:	
+//			zoznam 		- smernik na zaciatok zretazeneho zoznamu
+// VYSTUP:	ziadny
+void vytlacZoznam(PRVOK *zoznam){
+        while(zoznam!=NULL){
+                printf("%d ", zoznam->data);
+                zoznam = zoznam->next;
+        }
+        //printf("\n");
+}
+
+
+
+// Funkcia, ktora vytvori zretazeny zoznam obsahujuci prvky dane vstupnym polom
+// VSTUP:	
+//			pole 		- smernik na zaciatok pola
+//			dlzka		- dlzka pola
+// VYSTUP:	smernik na vytvoreny zoznam (na jeho prvy prvok)
+PRVOK* vytvorZoznam(int * pole, int dlzka) {
+	PRVOK * zaciatok = NULL;
+	int i;
+	PRVOK * novyPrvok;
+	
+	for (i = dlzka - 1; i >= 0; i--) {
+		novyPrvok = (PRVOK*)malloc(sizeof(PRVOK));
+		novyPrvok->data = pole[i];
+		novyPrvok->next = zaciatok;
+		zaciatok = novyPrvok;
+	}
+	return zaciatok;
+}
+
+
+
+// Funkcia vytlaci pole na standardny vystup. 
+// VSTUP:	
+//			nadpis		- retazec, ktory bude vytlaceny na zaciatku riadku
+//			pole		- pole ktoreho obsah sa vytlaci
+//			dlzka		- pocet prvkov pola array
+// VYSTUP:	ziadny
+void vytlacPole(char* nadpis, int* pole, int dlzka) {
+	int i;
+	printf("%s:\t", nadpis);
+	for (i = 0; i < dlzka; i++) {
+		printf("%3d, ", pole[i]);
+	}
+	printf("\n");
+}
+
+
+// ------------------------------------------
+// ULOHY
+// ------------------------------------------
+
+// Uloha 1
+
+
+
+// Funkcia, ktora v zadanom zozname zduplikuje vsetky prvky obsahujuce parne cislo.
+// Duplikat bude nasledovat hned za originalom. Nemente relativne poradie prvkov v zozname.
+// VSTUP:	
+//			zoznam		- smernik na zaciatok zoznamu
+// VYSTUP:	ziadny
+void duplikujParne(PRVOK* zoznam) {
+	PRVOK* temp = (PRVOK*)malloc(sizeof(PRVOK));
+}
+
+
+// ULOHA 2A
+
+// Funkcia na vymenu 2 vysledkov skusky (vymenia sa obsahy struktur)
+// VSTUP:	
+//			a,b			- smerniky na struktury, ktorych obsah funkcia vymeni	
+// VYSTUP:	ziadny
+void swap(VYSLEDOK_SKUSKY* a, VYSLEDOK_SKUSKY* b) {
+	VYSLEDOK_SKUSKY x = *a;
+
+	a->body = b->body;
+	a->znamka = b->znamka;
+
+	b->body = x.body;
+	b->znamka = x.znamka;
+}
+
+// ULOHA 2B
+
+// Funkcia, ktora preusporiada pole vysledkov skusky podla bodov nasledovne.
+// V lavej casti budu vysledky skusky s mensim poctom bodov ako v pivotovi.
+// V pravej casti budu vysledky skusky s poctom bodov vacsim alebo rovnym ako v pivotovi.
+// Zvolte si vlastnu techniku vyberu pivota. 
+// VSTUP:	
+//			pole		- pole s vysledkami skusky
+//			dlzka		- dlzka pola
+// VYSTUP:	pocet bodov pivota po preusporiadani pola 
+int partition(VYSLEDOK_SKUSKY pole[], int dlzka) {
+
+	int i, index, pivot, start = 0, end = dlzka - 1, total_points; 
+
+	pivot = 7;
+	total_points = pole[pivot].body;
+	index = end;
+
+	for(i = start; i < end; i++)
+	{
+		if(pole[i].body >= pole[pivot].body)
+		{
+			swap(&pole[i],&pole[index]);
+			index--;
+		}
+	}
+
+	return total_points;
+}
+
+// ULOHA 3
+
+// Funkcia vrati sucet hodnot prvkov podstromu v heape, ktoreho koren ma index 'index'. To znamena sucet prvku s indexom 'index' a vsetkych jeho nasledovnikov.
+// VSTUP:	heap		- pole, reprezentujuce heap
+//			index		- index prvku, ktoreho hodnota sa scita s hodnotami vsetkych jeho nasledovnikov (aj nepriamych (az po listy))
+//			velkost		- pocet prvkov heap-u
+// VYSTUP: 	sucet hodnoty prvku s indexom 'index' a hodnot vsetkych jeho nasledovnikov
+int sumaPodstromu(int * heap, int index, int velkost)
+{
+	//TODO
+	return -1; //tento riadok je tu len pre kompilaciu. Pri vypracovani ho mozete vymazat.
+}
+
+int main() {
+
+	// TEST 19:00 hod.
+	
+	
+	// 1. uloha
+
+	printf("\n---- TESTY FUNKCIE duplikujParne() -----------------------\n\n");
+	
+	int array1[] = { 3, 4, 8, 1, 5 };
+	int array2[] = { 4, 3, 1, 5, 8 };
+	int array3[] = { 4, 4, 4, 4 };
+	int array4[] = { 5, 5, 5, 5 };
+
+	PRVOK * z1 = vytvorZoznam(array1, 5);
+	PRVOK * z2 = vytvorZoznam(array2, 5);
+	PRVOK * z3 = vytvorZoznam(array1, 1);
+	PRVOK * z4 = vytvorZoznam(array2, 1);
+	PRVOK * z5 = vytvorZoznam(array1, 0);
+	PRVOK * z6 = vytvorZoznam(array3, 4);
+	PRVOK * z7 = vytvorZoznam(array4, 4);
+
+
+	duplikujParne(z1);
+	duplikujParne(z2);
+	duplikujParne(z3);
+	duplikujParne(z4);
+	duplikujParne(z5);
+	duplikujParne(z6);
+	duplikujParne(z7);
+
+	printf("Vypisalo:\t"); vytlacZoznam(z1); printf("\n");
+	printf("Malo vypisat:\t3 4 4 8 8 1 5\n");
+	printf("\nVypisalo:\t"); vytlacZoznam(z2); printf("\n");
+	printf("Malo vypisat:\t4 4 3 1 5 8 8\n");
+	printf("\nVypisalo:\t"); vytlacZoznam(z3); printf("\n");
+	printf("Malo vypisat:\t3\n");
+	printf("\nVypisalo:\t"); vytlacZoznam(z4); printf("\n");
+	printf("Malo vypisat:\t4 4\n");
+	printf("\nVypisalo:\t"); vytlacZoznam(z5); printf("\n");
+	printf("Malo vypisat:\t\n");
+	printf("\nVypisalo:\t"); vytlacZoznam(z6); printf("\n");
+	printf("Malo vypisat:\t4 4 4 4 4 4 4 4\n");
+	printf("\nVypisalo:\t"); vytlacZoznam(z7); printf("\n");
+	printf("Malo vypisat:\t5 5 5 5\n");
+	
+	// 2A. uloha
+	
+	printf("\n---- TESTY FUNKCIE swap() --------------------------------\n\n");
+	
+	VYSLEDOK_SKUSKY v1,v2,v3;
+	v1.body = 40;
+	v1.znamka = 'F';
+	
+	v2.body = 11;
+	v2.znamka = 'F';
+	
+	v3.body = 99;
+	v3.znamka = 'A';
+	
+	printf("Pred swapom:\t v1{%i,%c} <---> v2{%i,%c}\n",v1.body,v1.znamka,v2.body,v2.znamka);
+	swap(&v1,&v2);
+	printf("Po swape:\t v1{%i,%c} <---> v2{%i,%c}\n\n",v1.body,v1.znamka,v2.body,v2.znamka);
+	
+	printf("Pred swapom:\t v2{%i,%c} <---> v3{%i,%c}\n",v2.body,v2.znamka,v3.body,v3.znamka);
+	swap(&v2,&v3);
+	printf("Po swape:\t v2{%i,%c} <---> v3{%i,%c}\n",v2.body,v2.znamka,v3.body,v3.znamka);
+	
+	// 2B. uloha
+	
+	printf("\n---- TESTY FUNKCIE partition() ---------------------------\n\n");
+	
+	
+	VYSLEDOK_SKUSKY vs1[] = {{74,'C'},{0,'F'},{55,'F'},{92,'A'},{81,'C'},{86,'B'},{87,'B'},{55,'F'}, {69,'D'}};
+	VYSLEDOK_SKUSKY vs2[] = {{0,'F'}};
+	
+	printf("Pred partition:");
+	vytlacVysledky(vs1,9);
+	int pivot1 = partition(vs1,9); 
+	printf("\nPo partition (hodnota pivota = %i):",pivot1);
+	vytlacVysledky(vs1,9);
+	
+	printf("\n\nPred partition:");
+	vytlacVysledky(vs2,1);
+	int pivot2 = partition(vs2,1); 
+	printf("\nPo partition (hodnota pivota  = %i):",pivot2);
+	vytlacVysledky(vs2,1);
+
+	
+	
+	
+	// 3. uloha
+	
+	printf("\n\n---- TESTY FUNKCIE sumaPodstromu() ---------------------------\n\n");
+	
+	// vstupne udaje pre testovanie
+    int jeheap[]  = {50, 40, 50, 30, 40, 45, 35, 20, 20, 40, 30, 35, 25, 25, 24,  8,  7,  5,  4,  9,  8,  1,  2, 11, 12, 13, 14};
+    int jeheap2[] = {50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50};
+    int nieje[]   = {50, 40, 51, 30, 41, 45, 35, 20, 20, 40, 30, 35, 25, 25, 24,  8,  7,  5,  4,  9,  8,  1,  2, 11, 12, 13, 14};
+
+	printf("Vratilo: %3d, malo vratit:  33\n", sumaPodstromu(jeheap, 10, 27));
+    printf("Vratilo: %3d, malo vratit:  90\n", sumaPodstromu(jeheap,  0,  2));
+    printf("Vratilo: %3d, malo vratit:  50\n", sumaPodstromu(jeheap,  0,  1));
+    printf("Vratilo: %3d, malo vratit: 140\n", sumaPodstromu(jeheap,  0,  3));
+    printf("Vratilo: %3d, malo vratit: 603\n", sumaPodstromu(jeheap,  0, 27));
+    printf("Vratilo: %3d, malo vratit: 155\n", sumaPodstromu(jeheap,  5, 27));
+    printf("Vratilo: %3d, malo vratit:  24\n", sumaPodstromu(jeheap, 14,  27));
+	
+	system("pause");
+
+	return 0;
+}
